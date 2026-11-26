@@ -1,13 +1,11 @@
-import { getAllTransaksi } from '@/queries/transaksi.query';
-import { getAllKategori } from '@/queries/kategori.query';
-import { getSummary } from '@/queries/transaksi.query';
+'use client';
+
 import RiwayatTable from '@/components/riwayat/RiwayatTable';
 import { formatRupiah } from '@/lib/utils';
+import { useMoneyTrackerData } from '@/lib/storage';
 
 export default function RiwayatPage() {
-  const transaksi = getAllTransaksi();
-  const kategoris = getAllKategori();
-  const summary = getSummary();
+  const { isReady, transaksi, kategoris, summary } = useMoneyTrackerData();
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -51,7 +49,15 @@ export default function RiwayatPage() {
       </div>
 
       {/* Table */}
-      <RiwayatTable transaksi={transaksi} kategoris={kategoris} />
+      {!isReady ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-8 animate-pulse space-y-3">
+          <div className="h-10 rounded-lg bg-gray-100" />
+          <div className="h-10 rounded-lg bg-gray-100" />
+          <div className="h-10 rounded-lg bg-gray-100" />
+        </div>
+      ) : (
+        <RiwayatTable transaksi={transaksi} kategoris={kategoris} />
+      )}
     </div>
   );
 }

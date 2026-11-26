@@ -1,8 +1,10 @@
-import { getAllKategori } from '@/queries/kategori.query';
+'use client';
+
 import TransaksiForm from '@/components/transaksi/TransaksiForm';
+import { useMoneyTrackerData } from '@/lib/storage';
 
 export default function TransaksiPage() {
-  const kategoris = getAllKategori();
+  const { kategoris } = useMoneyTrackerData();
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -12,7 +14,7 @@ export default function TransaksiPage() {
         <p className="text-gray-500 text-xs sm:text-sm mt-1">Catat pemasukan atau pengeluaran baru</p>
       </div>
 
-      <TransaksiForm initialKategoris={kategoris} />
+      <TransaksiForm kategoris={kategoris} />
     </div>
   );
 }

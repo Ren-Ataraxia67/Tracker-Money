@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { Pencil, Trash2, X, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { TipeBadge } from '@/components/ui/Badge';
 import {
@@ -12,9 +11,9 @@ import {
   todayISO,
 } from '@/lib/utils';
 import {
-  updateTransaksiAction,
-  deleteTransaksiAction,
-} from '@/actions/transaksi.action';
+  updateTransaksiLocal,
+  deleteTransaksiLocal,
+} from '@/lib/storage';
 import type { TransaksiWithKategori, Kategori, Tipe } from '@/types';
 
 interface Props {
@@ -23,8 +22,6 @@ interface Props {
 }
 
 export default function RiwayatTable({ transaksi, kategoris }: Props) {
-  const router = useRouter();
-
   // Edit modal state
   const [editingItem, setEditingItem] = useState<TransaksiWithKategori | null>(null);
   const [editTipe, setEditTipe] = useState<Tipe>('pengeluaran');
@@ -70,7 +67,7 @@ export default function RiwayatTable({ transaksi, kategoris }: Props) {
     }
   };
 
-  const handleEditSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleEditSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!editingItem) return;
     setIsUpdating(true);
@@ -79,27 +76,25 @@ export default function RiwayatTable({ transaksi, kategoris }: Props) {
     const formData = new FormData(e.currentTarget);
     formData.set('tipe', editTipe);
 
-    const result = await updateTransaksiAction(editingItem.id, formData);
+    const result = updateTransaksiLocal(editingItem.id, formData);
     setIsUpdating(false);
 
     if (result.success) {
       setEditingItem(null);
       showToast(true, result.message);
-      router.refresh();
     } else {
       setEditMessage({ success: false, text: result.message });
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = (id: number) => {
     setIsDeleting(true);
-    const result = await deleteTransaksiAction(id);
+    const result = deleteTransaksiLocal(id);
     setIsDeleting(false);
     setDeletingId(null);
 
     if (result.success) {
       showToast(true, result.message);
-      router.refresh();
     } else {
       showToast(false, result.message);
     }

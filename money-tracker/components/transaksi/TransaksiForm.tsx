@@ -1,10 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { Plus, CheckCircle, XCircle, X } from 'lucide-react';
-import { createTransaksiAction } from '@/actions/transaksi.action';
-import { createKategoriAction } from '@/actions/kategori.action';
+import { createKategoriLocal, createTransaksiLocal } from '@/lib/storage';
 import {
   INCOME_KATEGORI_NAMES,
   isIncomeKategoriName,
@@ -13,14 +11,11 @@ import {
 import type { Kategori, Tipe } from '@/types';
 
 interface Props {
-  initialKategoris: Kategori[];
+  kategoris: Kategori[];
 }
 
-export default function TransaksiForm({ initialKategoris }: Props) {
-  const router = useRouter();
-
+export default function TransaksiForm({ kategoris }: Props) {
   // Form state
-  const [kategoris, setKategoris] = useState<Kategori[]>(initialKategoris);
   const [tipe, setTipe] = useState<Tipe>('pengeluaran');
   const [selectedKategoriId, setSelectedKategoriId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -61,18 +56,14 @@ export default function TransaksiForm({ initialKategoris }: Props) {
     }
   };
 
-  const handleAddKategori = async () => {
+  const handleAddKategori = () => {
     if (!newKategoriName.trim()) return;
     setIsAddingKategori(true);
 
-    const result = await createKategoriAction(newKategoriName);
+    const result = createKategoriLocal(newKategoriName);
 
     if (result.success && result.data) {
-      const newK = result.data;
-      setKategoris((prev) =>
-        [...prev, newK].sort((a, b) => a.nama_kategori.localeCompare(b.nama_kategori))
-      );
-      setSelectedKategoriId(String(newK.id));
+      setSelectedKategoriId(String(result.data.id));
       setNewKategoriName('');
       setShowAddKategori(false);
     } else {
@@ -83,27 +74,25 @@ export default function TransaksiForm({ initialKategoris }: Props) {
     setIsAddingKategori(false);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage(null);
 
     const formData = new FormData(e.currentTarget);
-    // pastikan tipe dari state (bukan input tersembunyi)
     formData.set('tipe', tipe);
 
-    const result = await createTransaksiAction(formData);
+    const result = createTransaksiLocal(formData);
     setMessage({ success: result.success, text: result.message });
     setIsLoading(false);
 
     if (result.success) {
-      (e.target as HTMLFormElement).reset();
+      e.currentTarget.reset();
       setSelectedKategoriId('');
       setTipe('pengeluaran');
       if (tanggalRef.current) {
         tanggalRef.current.value = todayISO();
       }
-      router.refresh();
     }
 
     setTimeout(() => setMessage(null), 5000);

@@ -1,11 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { initDb } from "@/lib/db";
 import Sidebar from "@/components/layout/Sidebar";
-
-// Inisialisasi DB sekali saat server pertama kali start
-initDb();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Expense Tracker",
+  title: "Moneta Catat Cuan",
   description: "Aplikasi pencatat pemasukan dan pengeluaran",
 };
 

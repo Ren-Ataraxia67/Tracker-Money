@@ -41,12 +41,24 @@ function validateTransaksiForm(formData: FormData): {
   if (!tanggal) return { valid: false, error: 'Tanggal wajib diisi.' };
 
   const kategori_id = kategori_id_raw ? Number(kategori_id_raw) : null;
-  if (tipe === 'pemasukan' && kategori_id !== null) {
+  if (kategori_id !== null) {
+    if (!Number.isInteger(kategori_id) || kategori_id <= 0) {
+      return { valid: false, error: 'Kategori tidak valid.' };
+    }
     const kategori = getAllKategori().find((k) => k.id === kategori_id);
-    if (!kategori || !isIncomeKategoriName(kategori.nama_kategori)) {
+    if (!kategori) {
+      return { valid: false, error: 'Kategori tidak ditemukan.' };
+    }
+    if (tipe === 'pemasukan' && !isIncomeKategoriName(kategori.nama_kategori)) {
       return {
         valid: false,
         error: 'Kategori pemasukan hanya boleh Gaji, Bonus, Usaha, atau Saham.',
+      };
+    }
+    if (tipe === 'pengeluaran' && isIncomeKategoriName(kategori.nama_kategori)) {
+      return {
+        valid: false,
+        error: 'Kategori pengeluaran tidak boleh menggunakan kategori pemasukan.',
       };
     }
   }

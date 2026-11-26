@@ -1,14 +1,14 @@
 import type { NextConfig } from "next";
 
+const isGithubPages = process.env.GITHUB_PAGES === "true";
+
 const nextConfig: NextConfig = {
-  serverExternalPackages: ['better-sqlite3'],
-  cacheComponents: true,
-  partialPrefetching: true,
-  experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000', '**.devtunnels.ms'],
-    },
+  output: "export",
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
   },
+  ...(isGithubPages ? { basePath: "/Tracker-Money" } : {}),
   turbopack: {
     rules: {
       "*.css": {
