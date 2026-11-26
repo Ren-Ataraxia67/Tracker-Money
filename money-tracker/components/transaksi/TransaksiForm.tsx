@@ -113,12 +113,12 @@ export default function TransaksiForm({ initialKategoris }: Props) {
     <div className="max-w-lg mx-auto">
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-          <h2 className="font-semibold text-gray-900 text-lg">Tambah Transaksi</h2>
-          <p className="text-gray-500 text-sm mt-0.5">Catat pemasukan atau pengeluaran baru</p>
+        <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+          <h2 className="font-semibold text-gray-900 text-base sm:text-lg">Tambah Transaksi</h2>
+          <p className="text-gray-500 text-xs sm:text-sm mt-0.5">Catat pemasukan atau pengeluaran baru</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-4 sm:space-y-5">
           {/* Tipe Toggle */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -130,7 +130,7 @@ export default function TransaksiForm({ initialKategoris }: Props) {
                   key={t}
                   type="button"
                   onClick={() => handleTipeChange(t)}
-                  className={`py-2.5 px-4 rounded-md text-sm font-medium transition-all ${
+                  className={`py-2.5 px-3 sm:px-4 rounded-md text-sm font-medium transition-all ${
                     tipe === t
                       ? t === 'pengeluaran'
                         ? 'bg-white text-red-600 shadow-sm ring-1 ring-red-100'
@@ -155,7 +155,7 @@ export default function TransaksiForm({ initialKategoris }: Props) {
               type="text"
               required
               placeholder="Contoh: Makan siang, Gaji bulanan..."
-              className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400"
+              className="w-full px-3.5 py-2.5 text-base sm:text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400"
             />
           </div>
 
@@ -172,7 +172,7 @@ export default function TransaksiForm({ initialKategoris }: Props) {
               min="1"
               step="1"
               placeholder="0"
-              className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400"
+              className="w-full px-3.5 py-2.5 text-base sm:text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400"
             />
           </div>
 
@@ -184,7 +184,7 @@ export default function TransaksiForm({ initialKategoris }: Props) {
                 name="kategori_id"
                 value={selectedKategoriId}
                 onChange={(e) => setSelectedKategoriId(e.target.value)}
-                className="flex-1 px-3.5 py-2.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                className="flex-1 min-w-0 px-3.5 py-2.5 text-base sm:text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
                 <option value="">-- Pilih Kategori --</option>
                 {filteredKategoris.map((k) => (
@@ -208,9 +208,9 @@ export default function TransaksiForm({ initialKategoris }: Props) {
 
             {/* Inline tambah kategori */}
             {tipe === 'pengeluaran' && showAddKategori && (
-              <div className="mt-2.5 p-3.5 bg-blue-50 rounded-lg border border-blue-100">
+              <div className="mt-2.5 p-3 sm:p-3.5 bg-blue-50 rounded-lg border border-blue-100">
                 <p className="text-xs font-semibold text-blue-700 mb-2">Tambah Kategori Baru</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap sm:flex-nowrap gap-2">
                   <input
                     type="text"
                     value={newKategoriName}
@@ -224,26 +224,29 @@ export default function TransaksiForm({ initialKategoris }: Props) {
                     placeholder="Nama kategori baru..."
                     maxLength={50}
                     autoFocus
-                    className="flex-1 px-3 py-2 text-sm rounded-md border border-blue-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="flex-1 min-w-[160px] px-3 py-2 text-base sm:text-sm rounded-md border border-blue-200 bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
                   />
-                  <button
-                    type="button"
-                    onClick={handleAddKategori}
-                    disabled={isAddingKategori || !newKategoriName.trim()}
-                    className="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-                  >
-                    {isAddingKategori ? '...' : 'Tambah'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setShowAddKategori(false);
-                      setNewKategoriName('');
-                    }}
-                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <X size={15} />
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={handleAddKategori}
+                      disabled={isAddingKategori || !newKategoriName.trim()}
+                      className="px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                    >
+                      {isAddingKategori ? '...' : 'Tambah'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowAddKategori(false);
+                        setNewKategoriName('');
+                      }}
+                      aria-label="Tutup tambah kategori"
+                      className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -261,7 +264,7 @@ export default function TransaksiForm({ initialKategoris }: Props) {
               type="date"
               required
               defaultValue=""
-              className="w-full px-3.5 py-2.5 text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-3.5 py-2.5 text-base sm:text-sm rounded-lg border border-gray-200 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
 

@@ -48,24 +48,26 @@ export default function SummaryCards({ summary }: { summary: Summary }) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      {cards.map((card) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+      {cards.map((card, index) => (
         <div
           key={card.label}
-          className={`rounded-xl border p-5 ${card.colorBg} ${card.colorBorder}`}
+          className={`rounded-xl border p-4 sm:p-5 ${card.colorBg} ${card.colorBorder} ${
+            index === 2 ? 'sm:col-span-2 lg:col-span-1' : ''
+          }`}
         >
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
+              <p className="text-[11px] sm:text-xs font-medium text-gray-500 mb-1 uppercase tracking-wide">
                 {card.label}
               </p>
-              <p className={`text-2xl font-bold truncate ${card.colorText}`}>
+              <p className={`text-xl sm:text-2xl font-bold truncate tabular-nums ${card.colorText}`}>
                 {card.label === 'Saldo'
                   ? `${card.prefix}${formatRupiah(Math.abs(card.value))}`
                   : formatRupiah(card.value)}
               </p>
             </div>
-            <div className={`p-2.5 rounded-lg flex-shrink-0 ${card.colorIconBg}`}>
+            <div className={`p-2 sm:p-2.5 rounded-lg flex-shrink-0 ${card.colorIconBg}`}>
               <card.Icon className={card.colorText} size={20} />
             </div>
           </div>

@@ -105,17 +105,25 @@ export default function Chart({ data }: { data: DailyData[] }) {
   const activeXPct =
     activeIndex !== null ? ((activeIndex + 0.5) / count) * 100 : 0;
 
-  const getTooltipPositionClass = (idx: number) => {
-    if (count === 1) return '-translate-x-1/2';
-    if (idx === 0) return 'translate-x-0';
-    if (idx === count - 1) return '-translate-x-full';
-    return '-translate-x-1/2';
+  const getTooltipAlignment = () => {
+    if (count === 1) {
+      return { style: { left: '50%' }, className: '-translate-x-1/2' };
+    }
+    if (activeXPct <= 28) {
+      return { style: { left: '0%' }, className: 'translate-x-0' };
+    }
+    if (activeXPct >= 72) {
+      return { style: { right: '0%' }, className: 'translate-x-0' };
+    }
+    return { style: { left: `${activeXPct}%` }, className: '-translate-x-1/2' };
   };
+
+  const tooltipAlign = getTooltipAlignment();
 
   return (
     <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs flex flex-col">
       {/* Header */}
-      <div className="px-5 pt-5 pb-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
+      <div className="px-4 pt-4 pb-3.5 sm:px-5 sm:pt-5 sm:pb-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-gray-900 text-sm">
@@ -160,10 +168,10 @@ export default function Chart({ data }: { data: DailyData[] }) {
       </div>
 
       {/* Period Mini KPI Strip */}
-      <div className="px-5 pt-4 grid grid-cols-3 gap-2.5">
+      <div className="px-4 pt-3.5 sm:px-5 sm:pt-4 grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
         <div className="rounded-xl bg-emerald-50/70 border border-emerald-100/80 px-3 py-2">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
             <span className="text-[11px] font-medium text-emerald-700/90">
               Pemasukan
             </span>
@@ -175,7 +183,7 @@ export default function Chart({ data }: { data: DailyData[] }) {
 
         <div className="rounded-xl bg-rose-50/70 border border-rose-100/80 px-3 py-2">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-rose-500" />
+            <span className="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0" />
             <span className="text-[11px] font-medium text-rose-700/90">
               Pengeluaran
             </span>
@@ -186,7 +194,7 @@ export default function Chart({ data }: { data: DailyData[] }) {
         </div>
 
         <div
-          className={`rounded-xl border px-3 py-2 ${
+          className={`col-span-2 sm:col-span-1 rounded-xl border px-3 py-2 ${
             totalSelisih >= 0
               ? 'bg-blue-50/70 border-blue-100/80'
               : 'bg-orange-50/70 border-orange-100/80'
@@ -211,14 +219,14 @@ export default function Chart({ data }: { data: DailyData[] }) {
       </div>
 
       {/* Chart Body */}
-      <div className="p-5 pt-5 flex-1 flex flex-col justify-end">
-        <div className="flex gap-3">
+      <div className="p-4 pt-4 sm:p-5 sm:pt-5 flex-1 flex flex-col justify-end">
+        <div className="flex gap-2 sm:gap-3">
           {/* Y-Axis Labels */}
-          <div className="flex flex-col justify-between h-48 text-right select-none shrink-0">
+          <div className="flex flex-col justify-between h-44 sm:h-48 text-right select-none shrink-0">
             {ticks.map((tick, i) => (
               <span
                 key={i}
-                className="text-[11px] text-gray-400 leading-none tabular-nums"
+                className="text-[10px] sm:text-[11px] text-gray-400 leading-none tabular-nums"
               >
                 {tick === 0 ? '0' : `Rp${formatCompactRupiah(tick)}`}
               </span>
@@ -228,7 +236,7 @@ export default function Chart({ data }: { data: DailyData[] }) {
           {/* Interactive Plot */}
           <div className="flex-1 min-w-0">
             <div
-              className="relative h-48"
+              className="relative h-44 sm:h-48"
               onMouseLeave={() => setActiveIndex(null)}
             >
               {/* Horizontal Dashed Gridlines */}
@@ -341,12 +349,15 @@ export default function Chart({ data }: { data: DailyData[] }) {
                     );
                   })}
 
-                  {/* Interactive Hover Columns */}
+                  {/* Interactive Hover / Tap Columns */}
                   <div className="absolute inset-0 flex z-20">
                     {sortedData.map((d, idx) => (
                       <div
                         key={d.tanggal}
                         onMouseEnter={() => setActiveIndex(idx)}
+                        onClick={() =>
+                          setActiveIndex((prev) => (prev === idx ? null : idx))
+                        }
                         className="flex-1 h-full cursor-pointer"
                       />
                     ))}
@@ -354,7 +365,7 @@ export default function Chart({ data }: { data: DailyData[] }) {
                 </>
               ) : (
                 /* Modern Bar Mode */
-                <div className="relative z-10 h-full flex items-end gap-2 sm:gap-3 px-1">
+                <div className="relative z-10 h-full flex items-end gap-1.5 sm:gap-3 px-0.5 sm:px-1">
                   {sortedData.map((d, idx) => {
                     const incomePct =
                       d.pemasukan > 0
@@ -370,7 +381,10 @@ export default function Chart({ data }: { data: DailyData[] }) {
                       <div
                         key={d.tanggal}
                         onMouseEnter={() => setActiveIndex(idx)}
-                        className={`flex-1 h-full flex items-end justify-center gap-1.5 px-1.5 rounded-t-xl transition-colors duration-150 cursor-pointer ${
+                        onClick={() =>
+                          setActiveIndex((prev) => (prev === idx ? null : idx))
+                        }
+                        className={`flex-1 h-full flex items-end justify-center gap-1 sm:gap-1.5 px-0.5 sm:px-1.5 rounded-t-xl transition-colors duration-150 cursor-pointer ${
                           isActive ? 'bg-gray-100/70' : ''
                         }`}
                       >
@@ -400,12 +414,10 @@ export default function Chart({ data }: { data: DailyData[] }) {
               {activeIndex !== null && activeData && (
                 <div
                   className="absolute bottom-full mb-2.5 z-30 pointer-events-none"
-                  style={{ left: `${activeXPct}%` }}
+                  style={tooltipAlign.style}
                 >
-                  <div
-                    className={`relative ${getTooltipPositionClass(activeIndex)}`}
-                  >
-                    <div className="bg-gray-900/95 backdrop-blur-md text-white text-xs rounded-xl shadow-xl px-3.5 py-2.5 min-w-[180px] border border-white/10">
+                  <div className={`relative ${tooltipAlign.className}`}>
+                    <div className="bg-gray-900/95 backdrop-blur-md text-white text-xs rounded-xl shadow-xl px-3.5 py-2.5 min-w-[170px] sm:min-w-[180px] border border-white/10">
                       <p className="font-semibold text-gray-100 mb-1.5 border-b border-white/10 pb-1">
                         {formatDate(activeData.tanggal)}
                       </p>
@@ -455,7 +467,7 @@ export default function Chart({ data }: { data: DailyData[] }) {
             </div>
 
             {/* X-Axis Labels */}
-            <div className="flex px-1 mt-2.5">
+            <div className="flex px-0.5 sm:px-1 mt-2.5">
               {sortedData.map((d, idx) => {
                 const labelStep = count > 7 ? Math.ceil(count / 6) : 1;
                 const showLabel =
@@ -467,7 +479,7 @@ export default function Chart({ data }: { data: DailyData[] }) {
                 return (
                   <div key={d.tanggal} className="flex-1 text-center min-w-0">
                     <span
-                      className={`inline-block px-1.5 py-0.5 rounded-full text-[11px] whitespace-nowrap transition-all ${
+                      className={`inline-block px-1 sm:px-1.5 py-0.5 rounded-full text-[10px] sm:text-[11px] whitespace-nowrap transition-all ${
                         activeIndex === idx
                           ? 'bg-gray-900 text-white font-semibold'
                           : showLabel
