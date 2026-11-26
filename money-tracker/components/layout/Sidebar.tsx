@@ -25,9 +25,9 @@ function BrandLogo() {
         <TrendingUp className="text-white" size={18} />
       </div>
       <div>
-        <p className="font-bold text-gray-900 text-sm leading-tight">Money</p>
+        <p className="font-bold text-gray-900 text-sm leading-tight">Moneta</p>
         <p className="font-semibold text-blue-600 text-xs leading-tight tracking-wider">
-          Tracker Re.
+          Catat Cuan
         </p>
       </div>
     </Link>
@@ -87,7 +87,7 @@ export default function Sidebar() {
         </div>
         {renderNavLinks()}
         <div className="p-4 border-t border-gray-100">
-          <p className="text-xs text-gray-400 text-center">© 2024 Money Tracker Re.</p>
+          <p className="text-xs text-gray-400 text-center">© 2024 Moneta Catat Cuan</p>
         </div>
       </aside>
 
@@ -164,7 +164,7 @@ export default function Sidebar() {
             </div>
             {renderNavLinks(() => setMenuOpenForPath(null))}
             <div className="p-4 border-t border-gray-100">
-              <p className="text-xs text-gray-400 text-center">© 2024 Money Tracker Re.</p>
+              <p className="text-xs text-gray-400 text-center">© 2024 Moneta Catat Cuan</p>
             </div>
           </aside>
         </div>
